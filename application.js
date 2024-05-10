@@ -49,3 +49,73 @@ function login() {
     }
   }
 }
+
+function listUsers() {
+  let users = JSON.parse(localStorage.getItem("users"));
+
+  let usersUI = "";
+  usersUI += `
+  <table id="customers">
+  <tr>
+  <th>S.No</th>
+  <th>User Id</th>
+  <th>Name</th>
+  <th>Email</th>
+  <th>Actions</th>
+  </tr>`;
+  users.map((user, index) => {
+    usersUI += "<tr>";
+    usersUI += "<td>" + index + "</td>";
+    usersUI += "<td>" + user.id + "</td>";
+    usersUI += "<td>" + user.name + "</td>";
+    usersUI += "<td>" + user.email + "</td>";
+    usersUI +=
+      "<td><button onclick='editUser(" +
+      user.id +
+      ")'>Edit</button> | <button onclick='deleteUser(" +
+      user.id +
+      ")'>Delete</button></td>";
+    usersUI += "</tr>";
+  });
+  usersUI += `</table>`;
+  document.getElementById("usersList").innerHTML = usersUI;
+}
+
+function editUser(userId) {
+  let listOfUsers = JSON.parse(localStorage.getItem("users"));
+  let singleUser = listOfUsers.find((user) => user.id === userId);
+  var userIs = JSON.stringify(singleUser);
+  localStorage.setItem("actionUser", userIs);
+  window.location = "editUser.html?save=true";
+}
+
+function updateUser() {
+  //form inputs
+  const updatedName = document.getElementById("name").value;
+  const updatedEmail = document.getElementById("email").value;
+
+  let actionUser = JSON.parse(localStorage.getItem("actionUser"));
+
+  let listUsers = JSON.parse(localStorage.getItem("users"));
+
+  let user = listUsers.find((user) => user.id === actionUser.id);
+  user.name = updatedName;
+  user.email = updatedEmail;
+
+  localStorage.setItem("users", JSON.stringify(listUsers));
+  localStorage.removeItem("actionUser");
+  window.location = "userDataList.html";
+}
+
+function deleteUser(uid) {
+  let listusersindb = JSON.parse(localStorage.getItem("users"));
+  let remains = listusersindb.filter((user) => user.id !== uid);
+  localStorage.setItem("users", JSON.stringify(remains));
+  window.location = "userDataList.html";
+}
+
+//CRUD
+// Create
+// Read
+// Update
+// Delete
