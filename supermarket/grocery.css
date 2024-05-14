@@ -1,0 +1,30 @@
+.bg{
+    background-color: lightblue;
+    direction: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+.bgclur{
+    background-color:lightcyan;
+    text-align: center;
+    margin-top:120px ;
+    padding: 10px;
+}
+.buttn{
+    color:white;
+    background-color: darkgoldenrod;
+    border-radius: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+

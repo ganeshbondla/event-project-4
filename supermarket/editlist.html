@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>prc</title>
+        <script src="supermarket.js"></script>
+    </head>
+    <body>
+        <h1>edit data</h1>
+        <label>product:</label>
+        <input type="name" id="product" placeholder="enter product"/><br>
+        <label>price:</label>
+        <input type="number" id="price" placeholder="enter price"/>
+        <button onclick="updatedate()">update</button>
+    </body>
+    <script>
+        function loadEdittableData(){
+            let result=JSON.parse(localStorage.getItem("result"));
+            document.getElementById("product").value=result.product;
+            document.getElementById("price").value=result.price;
+        }
+        loadEdittableData();
+    </script>
+</html>
