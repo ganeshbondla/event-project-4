@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Product</title>
+    <script src="additems.js"></script>
+    <link rel="stylesheet" href="added.css">
+  </head>
+  <body>
+    <h1>Edit product Details</h1>
+    <input type="text" id="pname" placeholder="product name" /><br /><br />
+    <input type="number" id="price" placeholder="price" /><br /><br />
+    <button onclick="updateProduct()">Update</button>
+  </body>
+  <script>
+    function loadEditableData() {
+      let actionItem = JSON.parse(localStorage.getItem("actionItem"));
+      document.getElementById("pname").value = actionItem.pname;
+      document.getElementById("price").value = actionItem.price;
+    }
+    loadEditableData();
+  </script>
+</html>
