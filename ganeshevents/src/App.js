@@ -5,6 +5,9 @@ import Contact from "./components/user/Contact";
 import EventsList from "./components/user/EventsList";
 import EventDetails from "./components/user/EventDetails";
 import BookEvent from "./components/user/BookEvent";
+import Login from "./components/user/Login";
+import PrivateRoute from "./components/utils/PrivateRoute";
+import Events from "./components/dashboard/Events";
 
 function App() {
   return (
@@ -16,6 +19,15 @@ function App() {
           <Route path="/events" element={<EventsList />} />
           <Route path="/event/:eventId" element={<EventDetails />} />
           <Route path="/event/book-event/:eventId" element={<BookEvent />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/user/events"
+            element={
+              <PrivateRoute>
+                <Events />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>

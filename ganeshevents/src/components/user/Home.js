@@ -15,6 +15,17 @@ const Home = () => {
       event_status: 1,
       event_deleted: 0,
       rating: 4,
+      event_img: "eventOne.jpg",
+      event_locations: [
+        {
+          id: 1,
+          location: "HYD",
+        },
+        {
+          id: 2,
+          location: "WRNGL",
+        },
+      ],
     },
     {
       id: 2,
@@ -25,6 +36,8 @@ const Home = () => {
       event_amount: 1200,
       event_status: 1,
       event_deleted: 0,
+      event_img: "eventTwo.jpg",
+      event_locations: [],
     },
     {
       id: 3,
@@ -35,18 +48,33 @@ const Home = () => {
       event_amount: 800,
       event_status: 1,
       event_deleted: 0,
+      event_img: "eventThree.jpg",
+      event_locations: [],
     },
   ];
   const top3 = events.map((event, index) => {
     return (
       <div className="col-4 col-md-4 col-lg-4 p-2" key={`HomeEvent_${index}`}>
         <div className="card">
-          <img className="card-img-top" src="./img/Login.gif" alt="logo" />
+          <img
+            className="card-img-top"
+            src={`./img/${event.event_img}`}
+            alt="logo"
+          />
           <div className="card-body">
             <h5 className="card-title">{event.event_name}</h5>
             <p className="card-text">
               {event.event_address} [INR : {event.event_amount}]
             </p>
+            {event.event_locations.length > 0 ||
+            event.event_locations === null ? (
+              <>
+                <ul>
+                  <li>{event.event_locations[0].location}</li>
+                  <li>{event.event_locations[1].location}</li>
+                </ul>
+              </>
+            ) : null}
             <Link to="#" className="btn btn-primary">
               Go somewhere
             </Link>

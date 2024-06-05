@@ -50,7 +50,7 @@ const Header = (props) => {
             </li>
           </ul>
           <form className="form-inline my-2 my-lg-0">
-            <Link className="btn btn-light" to="#">
+            <Link className="btn btn-light" to="/login">
               Login
             </Link>
             <Link className="btn btn-light ml-2" to="#">
