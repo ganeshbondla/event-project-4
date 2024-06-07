@@ -4,10 +4,13 @@ import Home from "./components/user/Home";
 import Contact from "./components/user/Contact";
 import EventsList from "./components/user/EventsList";
 import EventDetails from "./components/user/EventDetails";
-import BookEvent from "./components/user/BookEvent";
+import UserEventDetails from "./components/dashboard/EventDetails";
 import Login from "./components/user/Login";
 import PrivateRoute from "./components/utils/PrivateRoute";
 import Events from "./components/dashboard/Events";
+import BookEvent from "./components/dashboard/BookEvent";
+import Bookings from "./components/dashboard/Bookings";
+import Profile from "./components/dashboard/Profile";
 
 function App() {
   return (
@@ -18,13 +21,44 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/events" element={<EventsList />} />
           <Route path="/event/:eventId" element={<EventDetails />} />
-          <Route path="/event/book-event/:eventId" element={<BookEvent />} />
           <Route path="/login" element={<Login />} />
           <Route
             path="/user/events"
             element={
               <PrivateRoute>
                 <Events />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/user/event/:eventId"
+            element={
+              <PrivateRoute>
+                <UserEventDetails />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/user/event/book/:eventId"
+            element={
+              <PrivateRoute>
+                <BookEvent />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/user/bookings"
+            element={
+              <PrivateRoute>
+                <Bookings />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/user/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
               </PrivateRoute>
             }
           />

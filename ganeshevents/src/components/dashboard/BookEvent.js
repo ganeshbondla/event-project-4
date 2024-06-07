@@ -1,9 +1,9 @@
 import React from "react";
 import "./../../style/Myfilestyle.css";
 import Header from "./Header";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-const EventDetails = () => {
+const BookEvent = () => {
   const events = [
     {
       id: 1,
@@ -66,16 +66,41 @@ const EventDetails = () => {
             </>
           ) : (
             <>
-              <h2>{perticulerEvent[0].event_name}</h2>
+              <h2>Book Event : {perticulerEvent[0].event_name}</h2>
               <hr />
               <b>Event ID : {perticulerEvent[0].event_id}</b>
               <br />
               <b>Event Amount : {perticulerEvent[0].event_amount}</b>
-              <br />
-              <br />
-              <Link to={`/login`} className="btn btn-primary">
-                Book Event
-              </Link>
+              <hr />
+              <form className="mt-2">
+                <div class="form-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="inputName"
+                    placeholder="Enter Your Name"
+                  />
+                </div>
+                <div class="form-group">
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="inputEmail"
+                    placeholder="Enter Your Email"
+                  />
+                </div>
+                <div class="form-group">
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="inputMobile"
+                    placeholder="Enter Your Mobile Number"
+                  />
+                </div>
+                <button type="submit" className="btn btn-block btn-primary">
+                  Confirm My Booking
+                </button>
+              </form>
             </>
           )}
         </div>
@@ -84,4 +109,4 @@ const EventDetails = () => {
   );
 };
 
-export default EventDetails;
+export default BookEvent;

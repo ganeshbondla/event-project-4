@@ -3,7 +3,7 @@ import "./../../style/Myfilestyle.css";
 import Header from "./Header";
 import { Link, useParams } from "react-router-dom";
 
-const BookEvent = () => {
+const EventDetails = () => {
   const events = [
     {
       id: 1,
@@ -66,41 +66,19 @@ const BookEvent = () => {
             </>
           ) : (
             <>
-              <h2>Book Event : {perticulerEvent[0].event_name}</h2>
+              <h2>{perticulerEvent[0].event_name}</h2>
               <hr />
               <b>Event ID : {perticulerEvent[0].event_id}</b>
               <br />
               <b>Event Amount : {perticulerEvent[0].event_amount}</b>
-              <hr />
-              <form className="mt-2">
-                <div class="form-group">
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="inputName"
-                    placeholder="Enter Your Name"
-                  />
-                </div>
-                <div class="form-group">
-                  <input
-                    type="email"
-                    class="form-control"
-                    id="inputEmail"
-                    placeholder="Enter Your Email"
-                  />
-                </div>
-                <div class="form-group">
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="inputMobile"
-                    placeholder="Enter Your Mobile Number"
-                  />
-                </div>
-                <button type="submit" className="btn btn-block btn-primary">
-                  Confirm My Booking
-                </button>
-              </form>
+              <br />
+              <br />
+              <Link
+                to={`/user/event/book/${perticulerEvent[0].event_id}`}
+                className="btn btn-primary"
+              >
+                Book Event
+              </Link>
             </>
           )}
         </div>
@@ -109,4 +87,4 @@ const BookEvent = () => {
   );
 };
 
-export default BookEvent;
+export default EventDetails;
