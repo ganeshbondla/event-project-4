@@ -1,9 +1,10 @@
 const express = require("express");
 const app = express();
+require("dotenv").config();
 
 const eventController = require("./Controllers/eventController");
 
-app.listen(3048, (req, res) => {
+app.listen(process.env.LOCAL_POST, (req, res) => {
   console.log("Working....");
 });
 

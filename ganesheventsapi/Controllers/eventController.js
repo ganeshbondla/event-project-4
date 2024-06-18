@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const { RandomSixDigits } = require("../Helpers/helper");
+const database = require("../Config/database");
 
+//list
 router.get("/list", (req, res) => {
   const sampleObject = [
     {
@@ -49,6 +52,35 @@ router.get("/list", (req, res) => {
   res.status(200).json({
     status: true,
     data: sampleObject,
+  });
+});
+
+//create
+router.post("/create", (req, res) => {
+  const eventName = req.body.event_name;
+  const eventPrice = req.body.event_price;
+  const eventDesc = req.body.event_desc;
+  const eventDate = req.body.event_date;
+  const eventAddress = req.body.event_address;
+  const eventId = RandomSixDigits;
+
+  const runQuery = `INSERT INTO events(event_name, event_price, event_desc, event_id, event_address, event_date, status, isDeleted)
+    VALUES('${eventName}','${eventPrice}','${eventDesc}','${eventId}','${eventAddress}','${eventDate}','0','0')`;
+
+  database.query(runQuery, (err, results) => {
+    if (err) {
+      res.json({
+        success: false,
+        message: "Event is Not Created",
+        err,
+      });
+    } else {
+      res.json({
+        success: true,
+        message: "Event Successfully Created",
+        results,
+      });
+    }
   });
 });
 
