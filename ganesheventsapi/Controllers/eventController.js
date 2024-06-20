@@ -3,58 +3,6 @@ const router = express.Router();
 const { RandomSixDigits } = require("../Helpers/helper");
 const database = require("../Config/database");
 
-//list
-router.get("/list", (req, res) => {
-  const sampleObject = [
-    {
-      id: 1,
-      event_id: 123456,
-      event_name: "HelloHYD",
-      event_date: "28-05-2024",
-      event_address: "Madhapur, Hyderabad",
-      event_amount: 1000,
-      event_status: 1,
-      event_deleted: 0,
-      rating: 4,
-    },
-    {
-      id: 2,
-      event_id: 123457,
-      event_name: "HelloNZB",
-      event_date: "28-05-2024",
-      event_address: "Madhapur, Armoor",
-      event_amount: 1200,
-      event_status: 1,
-      event_deleted: 0,
-    },
-    {
-      id: 3,
-      event_id: 123458,
-      event_name: "HelloWRNGL",
-      event_date: "28-05-2024",
-      event_address: "Madhapur, WRNGL",
-      event_amount: 800,
-      event_status: 1,
-      event_deleted: 0,
-    },
-    {
-      id: 4,
-      event_id: 123459,
-      event_name: "HelloKRMR",
-      event_date: "28-05-2024",
-      event_address: "Madhapur, KRMR",
-      event_amount: 900,
-      event_status: 1,
-      event_deleted: 0,
-    },
-  ];
-
-  res.status(200).json({
-    status: true,
-    data: sampleObject,
-  });
-});
-
 //create
 router.post("/create", (req, res) => {
   const eventName = req.body.event_name;
@@ -62,24 +10,138 @@ router.post("/create", (req, res) => {
   const eventDesc = req.body.event_desc;
   const eventDate = req.body.event_date;
   const eventAddress = req.body.event_address;
-  const eventId = RandomSixDigits;
+  const eventId = Math.floor(100000 + Math.random() * 999999);
 
-  const runQuery = `INSERT INTO events(event_name, event_price, event_desc, event_id, event_address, event_date, status, isDeleted)
-    VALUES('${eventName}','${eventPrice}','${eventDesc}','${eventId}','${eventAddress}','${eventDate}','0','0')`;
-
-  database.query(runQuery, (err, results) => {
+  const checkQuery = `SELECT * FROM events WHERE event_name='${eventName}' AND event_price='${eventPrice}' AND isDeleted='0'`;
+  database.query(checkQuery, (err, results) => {
     if (err) {
-      res.json({
+      res.status(500).json({
         success: false,
-        message: "Event is Not Created",
+        message: "Internal Server Error",
         err,
       });
     } else {
-      res.json({
-        success: true,
-        message: "Event Successfully Created",
-        results,
+      if (results.length > 0) {
+        res.status(200).json({
+          success: true,
+          message: "Same Event Name and Price Already Created, Try Diffrent!",
+        });
+      } else {
+        const runQuery = `INSERT INTO events(event_name, event_price, event_desc, event_id, event_address, event_date, status, isDeleted)
+        VALUES('${eventName}','${eventPrice}','${eventDesc}','${eventId}','${eventAddress}','${eventDate}','0','0')`;
+
+        database.query(runQuery, (err, results) => {
+          if (err) {
+            res.status(500).json({
+              success: false,
+              message: "Event is Not Created",
+              err,
+            });
+          } else {
+            res.status(201).json({
+              success: true,
+              message: "Event Successfully Created",
+              results,
+            });
+          }
+        });
+      }
+    }
+  });
+});
+
+//read list
+router.get("/list", (req, res) => {
+  const listQuery = `SELECT * FROM events WHERE isDeleted='0'`;
+  database.query(listQuery, (err, results) => {
+    if (err) {
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+        err,
       });
+    } else {
+      if (results.length > 0) {
+        res.status(200).json({
+          success: true,
+          results,
+        });
+      } else {
+        res.status(204).json({
+          success: true,
+          message: "No Events Found!",
+        });
+      }
+    }
+  });
+});
+
+//by id
+router.get("/:id", (req, res) => {
+  const eventId = req.params.id;
+
+  const getByIdQuery = `SELECT * FROM events WHERE id='${eventId}' AND isDeleted='0'`;
+
+  database.query(getByIdQuery, (err, results) => {
+    if (err) {
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+        err,
+      });
+    } else {
+      if (results.length > 0) {
+        res.status(200).json({
+          success: true,
+          results,
+        });
+      } else {
+        res.status(200).json({
+          success: false,
+          message: "No Event Found On Provided ID!",
+        });
+      }
+    }
+  });
+});
+
+//delete
+router.delete("/delete/:id", (req, res) => {
+  const eventId = req.params.id;
+
+  const checkId = `SELECT * FROM events WHERE id='${eventId}' AND isDeleted='0'`;
+
+  database.query(checkId, (err, results) => {
+    if (err) {
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+        err,
+      });
+    } else {
+      if (results.length > 0) {
+        const deleteQuery = `UPDATE events SET isDeleted='1' WHERE id='${eventId}'`;
+
+        database.query(deleteQuery, (err, results) => {
+          if (err) {
+            res.status(500).json({
+              success: false,
+              message: "Internal Server Error",
+              err,
+            });
+          } else {
+            res.status(200).json({
+              success: true,
+              message: "Event Deleted Success",
+            });
+          }
+        });
+      } else {
+        res.status(200).json({
+          success: false,
+          message: "No Event Founf on Provided ID",
+        });
+      }
     }
   });
 });
