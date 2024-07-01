@@ -146,4 +146,58 @@ router.delete("/delete/:id", (req, res) => {
   });
 });
 
+//update
+router.put("/update/:id", (req, res) => {
+  const eventId = req.params.id;
+
+  const checkId = `SELECT * FROM events WHERE id='${eventId}' AND isDeleted='0'`;
+
+  database.query(checkId, (err, results) => {
+    if (err) {
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+        err,
+      });
+    } else {
+      if (results.length > 0) {
+        const eventName = req.body.event_name;
+        const eventPrice = req.body.event_price;
+        const eventDesc = req.body.event_desc;
+        const eventDate = req.body.event_date;
+        const eventAddress = req.body.event_address;
+        const eventStatus = req.body.event_status;
+
+        const updateQuery = `UPDATE events SET 
+      event_name = '${eventName}',
+      event_price	= '${eventPrice}',
+      event_desc = '${eventDesc}',
+      event_address = '${eventAddress}',
+      event_date = '${eventDate}',
+      status = '${eventStatus}' WHERE id='${eventId}'`;
+
+        database.query(updateQuery, (err, results) => {
+          if (err) {
+            res.status(500).json({
+              success: false,
+              message: "Internal Server Error",
+              err,
+            });
+          } else {
+            res.status(200).json({
+              success: true,
+              message: "Data Updated Success",
+            });
+          }
+        });
+      } else {
+        res.status(200).json({
+          success: false,
+          message: "No Event Founf on Provided ID",
+        });
+      }
+    }
+  });
+});
+
 module.exports = router;
