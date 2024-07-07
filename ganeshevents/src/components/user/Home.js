@@ -1,57 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./../../style/Myfilestyle.css";
 import Header from "./Header";
 import { Link } from "react-router-dom";
+import { apiEndPoint } from "../utils/ApiService";
 
 const Home = () => {
-  const events = [
-    {
-      id: 1,
-      event_id: 123456,
-      event_name: "HelloHYD",
-      event_date: "28-05-2024",
-      event_address: "Madhapur, Hyderabad",
-      event_amount: 1000,
-      event_status: 1,
-      event_deleted: 0,
-      rating: 4,
-      event_img: "eventOne.jpg",
-      event_locations: [
-        {
-          id: 1,
-          location: "HYD",
+  const serviceUrl = apiEndPoint();
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    const fetchEventList = async () => {
+      const endpoint = serviceUrl + "event/list";
+      const options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
         },
-        {
-          id: 2,
-          location: "WRNGL",
-        },
-      ],
-    },
-    {
-      id: 2,
-      event_id: 123457,
-      event_name: "HelloNZB",
-      event_date: "28-05-2024",
-      event_address: "Madhapur, Armoor",
-      event_amount: 1200,
-      event_status: 1,
-      event_deleted: 0,
-      event_img: "eventTwo.jpg",
-      event_locations: [],
-    },
-    {
-      id: 3,
-      event_id: 123458,
-      event_name: "HelloWRNGL",
-      event_date: "28-05-2024",
-      event_address: "Madhapur, WRNGL",
-      event_amount: 800,
-      event_status: 1,
-      event_deleted: 0,
-      event_img: "eventThree.jpg",
-      event_locations: [],
-    },
-  ];
+      };
+      await fetch(endpoint, options)
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            alert(res.statusText);
+          }
+        })
+        .then((data) => {
+          if (data.success === true) {
+            setEvents(data.results);
+          } else {
+            alert(data.message);
+          }
+        });
+    };
+    fetchEventList();
+  }, []);
+
   const top3 = events.map((event, index) => {
     return (
       <div className="col-4 col-md-4 col-lg-4 p-2" key={`HomeEvent_${index}`}>
@@ -62,19 +46,12 @@ const Home = () => {
             alt="logo"
           />
           <div className="card-body">
-            <h5 className="card-title">{event.event_name}</h5>
+            <h5 className="card-title">
+              {event.event_name} (<b>{event.event_id}</b>)
+            </h5>
             <p className="card-text">
-              {event.event_address} [INR : {event.event_amount}]
+              {event.event_address} [INR : {event.event_price}]
             </p>
-            {event.event_locations.length > 0 ||
-            event.event_locations === null ? (
-              <>
-                <ul>
-                  <li>{event.event_locations[0].location}</li>
-                  <li>{event.event_locations[1].location}</li>
-                </ul>
-              </>
-            ) : null}
             <Link to="#" className="btn btn-primary">
               Go somewhere
             </Link>
