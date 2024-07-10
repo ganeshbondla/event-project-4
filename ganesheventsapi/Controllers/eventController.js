@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const { RandomSixDigits } = require("../Helpers/helper");
 const database = require("../Config/database");
 
 //create

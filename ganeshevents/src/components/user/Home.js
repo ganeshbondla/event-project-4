@@ -40,11 +40,7 @@ const Home = () => {
     return (
       <div className="col-4 col-md-4 col-lg-4 p-2" key={`HomeEvent_${index}`}>
         <div className="card">
-          <img
-            className="card-img-top"
-            src={`./img/${event.event_img}`}
-            alt="logo"
-          />
+          <img className="card-img-top" src={`./img/eventOne.jpg`} alt="logo" />
           <div className="card-body">
             <h5 className="card-title">
               {event.event_name} (<b>{event.event_id}</b>)

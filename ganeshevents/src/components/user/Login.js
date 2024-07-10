@@ -2,26 +2,48 @@ import { React, useState } from "react";
 import "./../../style/Myfilestyle.css";
 import Header from "./Header";
 import { Link, useNavigate } from "react-router-dom";
+import { apiEndPoint } from "../utils/ApiService";
 
 const Login = () => {
+  const serviceUrl = apiEndPoint();
   const [inputemail, setEmailAddress] = useState("");
   const [inputpassword, setPassword] = useState("");
-  const [checked] = useState(true);
 
   const openComponent = useNavigate();
 
-  const proceedLogin = (e) => {
+  const proceedLogin = async (e) => {
     e.preventDefault();
 
     let userData = {
       username: inputemail,
       password: inputpassword,
-      checked: checked,
     };
 
-    console.log(userData);
+    const endpoint = serviceUrl + "user/login";
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    };
 
-    openComponent("/user/events");
+    await fetch(endpoint, options)
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          alert(res.statusText);
+        }
+      })
+      .then((data) => {
+        if (data.success === true) {
+          localStorage.setItem("userAuthToken", data.token);
+          openComponent("/user/events");
+        } else {
+          alert(data.message);
+        }
+      });
   };
   return (
     <>
