@@ -39,6 +39,7 @@ const Login = () => {
       .then((data) => {
         if (data.success === true) {
           localStorage.setItem("userAuthToken", data.token);
+          localStorage.setItem("userkey", data.userkey);
           openComponent("/user/events");
         } else {
           alert(data.message);

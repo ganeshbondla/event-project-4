@@ -1,51 +1,39 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Header from "./Header";
+import { apiEndPoint } from "../utils/ApiService";
 
 const Events = () => {
-  const events = [
-    {
-      id: 1,
-      event_id: 123456,
-      event_name: "HelloHYD",
-      event_date: "28-05-2024",
-      event_address: "Madhapur, Hyderabad",
-      event_amount: 1000,
-      event_status: 1,
-      event_deleted: 0,
-      rating: 4,
-    },
-    {
-      id: 2,
-      event_id: 123457,
-      event_name: "HelloNZB",
-      event_date: "28-05-2024",
-      event_address: "Madhapur, Armoor",
-      event_amount: 1200,
-      event_status: 1,
-      event_deleted: 0,
-    },
-    {
-      id: 3,
-      event_id: 123458,
-      event_name: "HelloWRNGL",
-      event_date: "28-05-2024",
-      event_address: "Madhapur, WRNGL",
-      event_amount: 800,
-      event_status: 1,
-      event_deleted: 0,
-    },
-    {
-      id: 4,
-      event_id: 123459,
-      event_name: "HelloKRMR",
-      event_date: "28-05-2024",
-      event_address: "Madhapur, KRMR",
-      event_amount: 900,
-      event_status: 1,
-      event_deleted: 0,
-    },
-  ];
+  const serviceUrl = apiEndPoint();
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    const fetchEventList = async () => {
+      const endpoint = serviceUrl + "event/list";
+      const options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      await fetch(endpoint, options)
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            alert(res.statusText);
+          }
+        })
+        .then((data) => {
+          if (data.success === true) {
+            setEvents(data.results);
+          } else {
+            alert(data.message);
+          }
+        });
+    };
+    fetchEventList();
+  }, []);
 
   const eventsview = events.map((event, index) => {
     return (

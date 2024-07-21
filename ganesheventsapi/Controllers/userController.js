@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const database = require("../Config/database");
 const jwt = require("jsonwebtoken");
+var md5 = require("md5");
+const JwtVerify = require("../Helpers/JwtVerify");
 
 router.post("/create", (req, res) => {
   const userId = Math.floor(100000 + Math.random() * 999999);
@@ -9,6 +11,8 @@ router.post("/create", (req, res) => {
   const email = req.body.user_email;
   const mobile = req.body.user_mobile;
   const password = req.body.user_password;
+  const hash = userId + Math.floor(1000 + Math.random() * 9999);
+  const sessionKey = md5(hash);
 
   const checkQuery = `SELECT * FROM users WHERE email='${email}' AND isDeleted='0'`;
   database.query(checkQuery, (err, results) => {
@@ -25,8 +29,8 @@ router.post("/create", (req, res) => {
           message: "User With Email Address Already Created, Try Diffrent!",
         });
       } else {
-        const runQuery = `INSERT INTO users(user_id, user_name, email, mobile, password, status, isDeleted)
-        VALUES('${userId}','${userName}','${email}','${mobile}','${password}','0','0')`;
+        const runQuery = `INSERT INTO users(user_id, user_name, email, mobile, password, session_key, status, isDeleted)
+        VALUES('${userId}','${userName}','${email}','${mobile}','${password}','${sessionKey}','0','0')`;
 
         database.query(runQuery, (err, results) => {
           if (err) {
@@ -78,6 +82,7 @@ router.post("/login", (req, res) => {
           res.status(200).json({
             success: true,
             user,
+            userkey: results[0].session_key,
             token,
           });
         } else {
@@ -97,22 +102,31 @@ router.post("/login", (req, res) => {
 });
 
 //auth check
-router.get("/auth/check", (req, res) => {
-  const headerkey = process.env.JWT_HEADER_KEY;
-  const securekey = process.env.JWT_SECRATE_KEY;
-  const headerToken = req.header(headerkey);
-  const verify = jwt.verify(headerToken, securekey);
-  if (verify) {
-    const userId = verify.user_id;
-    res.status(200).json({
-      user_id: userId,
-      success: true,
-    });
-  } else {
-    res.status(200).json({
-      success: false,
-    });
-  }
+router.get("/auth/check", JwtVerify, (req, res) => {
+  const userId = req.userId;
+  res.status(200).json({
+    user_id: userId,
+    success: true,
+  });
+});
+
+//profile //auth
+router.get("/profile", JwtVerify, (req, res) => {
+  const userId = req.userId;
+  const checkQuery = `SELECT * FROM users WHERE user_id='${userId}' AND isDeleted='0'`;
+  database.query(checkQuery, (err, results) => {
+    if (results.length > 0) {
+      res.status(200).json({
+        success: true,
+        results,
+      });
+    } else {
+      res.status(200).json({
+        success: false,
+        message: "User Is Not Found.",
+      });
+    }
+  });
 });
 
 module.exports = router;
